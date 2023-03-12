@@ -1,0 +1,30 @@
+@import colors
+
+.container-body
+    display: flex
+    justify-content: center
+
+    .container-main
+        display: flex
+        background-color: $fondo
+        flex-direction: column
+        width: 90%
+        color: $secundario
+        height: 500px
+        border: 20px solid $fondo
+        border-radius: 10px
+
+        .subtitle
+            margin-bottom: 100px
+
+        .container-data
+            display: flex
+            width: 100%
+
+            .container-map
+                flex-grow: 2
+
+            .container-graphics
+                flex-grow: 1
+                display: flex
+                flex-direction: column
