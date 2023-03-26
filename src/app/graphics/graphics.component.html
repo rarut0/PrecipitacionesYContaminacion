@@ -1,5 +1,7 @@
-<div style="width: 100%;">
-    <canvas baseChart
+<div style="width: 100%;" *ngIf="chartData.length!==0">
+    <p *ngIf="title === 'quim'">Química Atmosférica</p>
+    <p *ngIf="title === 'prec'">Precipitaciones</p>
+    <canvas baseChart 
         [datasets]="chartData"
         [legend]="true"
         [labels]="chartLabels"
@@ -7,4 +9,4 @@
         [type]="'line'"
     >
     </canvas>
-  </div>
+</div>
