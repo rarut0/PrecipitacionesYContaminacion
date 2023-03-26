@@ -14,6 +14,7 @@ export class GraphicsComponent {
   @Input() title: string = "";
 
   private bsSlice: BehaviorSubject<number>;
+  private bsCCAA: BehaviorSubject<string>;
   private behaviorControlService: BehaviorControlService;
   private readDataService: ReadDataService;
   private data: GraphicsData = {
@@ -22,6 +23,7 @@ export class GraphicsComponent {
   }
 
   private selectedRegion: string = ''
+  private slice: number = 0
   
   public chartData: DataSet[] = [];
   public chartLabels: string [] = [];
@@ -30,22 +32,42 @@ export class GraphicsComponent {
     this.behaviorControlService = behaviorControlService;
     
     this.bsSlice = this.behaviorControlService.getBSSlice();
+    this.bsCCAA = this.behaviorControlService.getBSCCAA();
 
     this.readDataService = readDataService;
-
-
-
+    
+    this.selectedRegion = 'ESPAÑA PENINSULAR';
   }
   
   ngOnInit() {
-    this.selectedRegion = 'ESPAÑA PENINSULAR';
     this.bsSlice.subscribe((nextSlice: number)=>{
-      this.chartLabels = this.data.chartLabels.slice(nextSlice, nextSlice + 6)
+      this.slice = nextSlice;
+      this.newDataPoint();
+      
+    });
+
+    this.bsCCAA.subscribe((nextCCAA: string) => {
+      this.selectedRegion = nextCCAA
+      this.newDataPoint()
+
+    })
+    
+    this.data = this.readDataService.readDataFile(this.title)
+
+    this.newDataPoint()
+  }
+
+  ngOnDestroy() {
+    this.bsSlice.unsubscribe();
+  }
+
+  newDataPoint() {
+    this.chartLabels = this.data.chartLabels.slice(this.slice, this.slice + 6)
       if(this.title === 'prec'){
         this.chartData = this.data.dataSet.filter((data:DataSet) => data.label === this.selectedRegion)
         .map((data:DataSet) => {
           return {
-            data: data.data.slice(nextSlice, nextSlice + 6),
+            data: data.data.slice(this.slice, this.slice + 6),
             label: data.label
           }
         })
@@ -55,50 +77,11 @@ export class GraphicsComponent {
           (data:DataSet) => (data.label === 'ES01.SO2' || data.label === 'ES01.NO' || data.label === 'ES01.NO2')
         ).map((data:DataSet) => {
           return {
-            data: data.data.slice(nextSlice, nextSlice + 6),
+            data: data.data.slice(this.slice, this.slice + 6),
             label: data.label
           }
         })
       }
-    });
-    
-    this.data = this.readDataService.readDataFile(this.title)
-    
-    this.chartLabels = this.data.chartLabels.slice(0, 6);
-    if(this.title === 'prec'){
-      this.chartData = this.data.dataSet.filter((data:DataSet) => data.label === this.selectedRegion).map((data:DataSet) => {
-        return {
-          data: data.data.slice(0, 6),
-          label: data.label
-        }
-      })
-    }
-    if(this.title == 'quim'){
-      this.chartData = this.data.dataSet.filter(
-        (data:DataSet) => (data.label === 'ES01.SO2' || data.label === 'ES01.NO' || data.label === 'ES01.NO2')
-      ).map((data:DataSet) => {
-        return {
-          data: data.data.slice(0, 6),
-          label: data.label
-        }
-      })
-    }
-  }
-
-  ngOnDestroy() {
-    this.bsSlice.unsubscribe();
-  }
-
-  newDataPoint(dataArr: number[], label: string) {
-    this.chartData.forEach((dataset, index) => {
-      this.chartData[index] = Object.assign({}, this.chartData[index], {
-        data: [...this.chartData[index].data, dataArr[index]]
-      });
-    });
-
-
-    this.chartLabels = [...this.chartLabels, label];
-
   }
 
 
