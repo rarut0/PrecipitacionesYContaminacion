@@ -6,27 +6,17 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class BehaviorControlService {
 
-  bsMonth: BehaviorSubject<number>;
-  bsYear: BehaviorSubject<number>;
+  private bsSlice: BehaviorSubject<number>;
 
   constructor() {
-    this.bsMonth = new BehaviorSubject(11);
-    this.bsYear = new BehaviorSubject(2022);
+    this.bsSlice = new BehaviorSubject(0);
   }
 
-  public getBSMonth():BehaviorSubject<number>{
-    return this.bsMonth;
+  public getBSSlice():BehaviorSubject<number>{
+    return this.bsSlice;
   }
 
-  public getBSYear():BehaviorSubject<number>{
-    return this.bsYear;
-  }
-
-  public setMonth(month: number): void {
-    this.bsMonth.next(month);
-  }
-
-  public setYear(year:number): void {
-    this.bsYear.next(year);
+  public setSlice(slice:number): void {
+    this.bsSlice.next(slice);
   }
 }

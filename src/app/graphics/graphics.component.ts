@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import { BehaviorControlService } from '../behavior-control.service';
-import { DataSet } from '../graphicsData';
+import { DataSet, GraphicsData } from '../graphicsData';
 import { ReadDataService } from '../read-data.service';
 
 @Component({
@@ -13,13 +13,15 @@ export class GraphicsComponent {
 
   @Input() title: string = "";
 
-  private bsMonth: BehaviorSubject<number>;
-  private bsYear: BehaviorSubject<number>;
+  private bsSlice: BehaviorSubject<number>;
   private behaviorControlService: BehaviorControlService;
   private readDataService: ReadDataService;
-  
-  private year: number = 2019;
-  private month: number = 1;
+  private data: GraphicsData = {
+    dataSet: [],
+    chartLabels: []
+  }
+
+  private selectedRegion: string = ''
   
   public chartData: DataSet[] = [];
   public chartLabels: string [] = [];
@@ -27,8 +29,7 @@ export class GraphicsComponent {
   constructor (behaviorControlService: BehaviorControlService, readDataService:ReadDataService) {
     this.behaviorControlService = behaviorControlService;
     
-    this.bsMonth = this.behaviorControlService.getBSMonth();
-    this.bsYear = this.behaviorControlService.getBSYear();
+    this.bsSlice = this.behaviorControlService.getBSSlice();
 
     this.readDataService = readDataService;
 
@@ -37,22 +38,55 @@ export class GraphicsComponent {
   }
   
   ngOnInit() {
-    this.bsMonth.subscribe((nextMonth: number)=>{
-      this.month = nextMonth;
-    });
-    this.bsYear.subscribe((nextYear: number)=>{
-      this.year = nextYear;
+    this.selectedRegion = 'ESPAÑA PENINSULAR';
+    this.bsSlice.subscribe((nextSlice: number)=>{
+      this.chartLabels = this.data.chartLabels.slice(nextSlice, nextSlice + 6)
+      if(this.title === 'prec'){
+        this.chartData = this.data.dataSet.filter((data:DataSet) => data.label === this.selectedRegion)
+        .map((data:DataSet) => {
+          return {
+            data: data.data.slice(nextSlice, nextSlice + 6),
+            label: data.label
+          }
+        })
+      }
+      if(this.title == 'quim'){
+        this.chartData = this.data.dataSet.filter(
+          (data:DataSet) => (data.label === 'ES01.SO2' || data.label === 'ES01.NO' || data.label === 'ES01.NO2')
+        ).map((data:DataSet) => {
+          return {
+            data: data.data.slice(nextSlice, nextSlice + 6),
+            label: data.label
+          }
+        })
+      }
     });
     
-    const data = this.readDataService.readDataFile(this.title)
+    this.data = this.readDataService.readDataFile(this.title)
     
-    this.chartLabels = data.chartLabels
-    this.chartData = data.dataSet
+    this.chartLabels = this.data.chartLabels.slice(0, 6);
+    if(this.title === 'prec'){
+      this.chartData = this.data.dataSet.filter((data:DataSet) => data.label === this.selectedRegion).map((data:DataSet) => {
+        return {
+          data: data.data.slice(0, 6),
+          label: data.label
+        }
+      })
+    }
+    if(this.title == 'quim'){
+      this.chartData = this.data.dataSet.filter(
+        (data:DataSet) => (data.label === 'ES01.SO2' || data.label === 'ES01.NO' || data.label === 'ES01.NO2')
+      ).map((data:DataSet) => {
+        return {
+          data: data.data.slice(0, 6),
+          label: data.label
+        }
+      })
+    }
   }
 
   ngOnDestroy() {
-    this.bsMonth.unsubscribe();
-    this.bsYear.unsubscribe();
+    this.bsSlice.unsubscribe();
   }
 
   newDataPoint(dataArr: number[], label: string) {

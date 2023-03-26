@@ -10,34 +10,25 @@ import { BehaviorControlService } from '../behavior-control.service';
 export class MapComponent {
 
 
-  private bsMonth: BehaviorSubject<number>;
-  private bsYear: BehaviorSubject<number>;
+  private bsSlice: BehaviorSubject<number>;
   private behaviorControlService: BehaviorControlService;
 
-  private year: number;
-  private month: number;
+  private slice: number;
 
   constructor (behaviorControlService: BehaviorControlService) {
     this.behaviorControlService = behaviorControlService;
     
-    this.bsMonth = this.behaviorControlService.getBSMonth();
-    this.bsYear = this.behaviorControlService.getBSYear();
+    this.bsSlice = this.behaviorControlService.getBSSlice();
 
-    this.year = 2019;
-    this.month = 0;
+    this.slice = 0;
   }
 
   ngOnInit() {
-    this.bsMonth.subscribe((nextMonth: number)=>{
-      this.month = nextMonth;
-    });
-    this.bsYear.subscribe((nextYear: number)=>{
-      this.year = nextYear;
+    this.bsSlice.subscribe((nextSlice: number)=>{
+      this.slice = nextSlice;
     });
   }
 
   ngOnDestroy() {
-    this.bsMonth.unsubscribe();
-    this.bsYear.unsubscribe();
   }
 }

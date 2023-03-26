@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MapComponent } from './map/map.component';
 import { GraphicsComponent } from './graphics/graphics.component';
+import { SelectTimeComponent } from './select-time/select-time.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MapComponent,
-    GraphicsComponent
+    GraphicsComponent,
+    SelectTimeComponent
   ],
   imports: [
     BrowserModule,

@@ -78,12 +78,12 @@ export class ReadDataService {
         chartLabels = Object.keys(inner).filter((key:string) => (key !== 'VARIABLE' && key !== 'CODIGO' && key !== 'LATITUD' && key !== 'LONGITUD'))
       }
       chartLabels.forEach((key: any) => {
-          data.push(inner[key])
+          data.push(inner[key]*1)
       });
 
       const dataSet:DataSet = {
         data,
-        label: inner['VARIABLE']
+        label: inner['CODIGO'] + '.' + inner['VARIABLE']
       }
 
       dataSetArray.push(dataSet)
