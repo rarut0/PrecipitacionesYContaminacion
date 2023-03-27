@@ -14,6 +14,7 @@ export class MapComponent {
   private behaviorControlService: BehaviorControlService;
 
   private slice: number;
+  private selectedCCAA: string = ''
 
   constructor (behaviorControlService: BehaviorControlService) {
     this.behaviorControlService = behaviorControlService;
@@ -30,5 +31,14 @@ export class MapComponent {
   }
 
   ngOnDestroy() {
+    this.bsSlice.unsubscribe();
+  }
+
+  public mapClicked(CCAA:string){
+    if(CCAA === this.selectedCCAA){
+      CCAA = 'ESPAÑA PENINSULAR'
+    }
+    this.selectedCCAA = CCAA;
+    this.behaviorControlService.setCCAA(CCAA)
   }
 }
