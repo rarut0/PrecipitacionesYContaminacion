@@ -24,6 +24,7 @@ export class GraphicsComponent {
 
   private selectedRegion: string = ''
   private slice: number = 0
+  private coidogoEstacion: string = 'ES01'
   
   public chartData: DataSet[] = [];
   public chartLabels: string [] = [];
@@ -48,6 +49,7 @@ export class GraphicsComponent {
 
     this.bsCCAA.subscribe((nextCCAA: string) => {
       this.selectedRegion = nextCCAA
+      this.selectCodigo()
       this.newDataPoint()
 
     })
@@ -74,7 +76,7 @@ export class GraphicsComponent {
       }
       if(this.title == 'quim'){
         this.chartData = this.data.dataSet.filter(
-          (data:DataSet) => (data.label === 'ES01.SO2' || data.label === 'ES01.NO' || data.label === 'ES01.NO2')
+          (data:DataSet) => (data.label === this.coidogoEstacion+'.SO2' || data.label === this.coidogoEstacion+'.O3'  || data.label === this.coidogoEstacion+'.NO' || data.label === this.coidogoEstacion+'.NO2')
         ).map((data:DataSet) => {
           return {
             data: data.data.slice(this.slice, this.slice + 6),
@@ -82,6 +84,72 @@ export class GraphicsComponent {
           }
         })
       }
+  }
+
+  private selectCodigo(): void{
+
+    switch (this.selectedRegion){
+      case 'COMUNIDAD AUTÓNOMA DE GALICIA':
+        this.coidogoEstacion = 'ES05'
+        break;
+      case 'PRINCIPADO DE ASTURIAS':
+        this.coidogoEstacion = 'ES08'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE CANTABRIA':
+        this.coidogoEstacion = 'ES08'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DEL PAÍS VASCO':
+        this.coidogoEstacion = 'ES08'
+        break;
+      case 'COMUNIDAD FORAL DE NAVARRA':
+        this.coidogoEstacion = 'ES14'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE ARAGÓN':
+        this.coidogoEstacion = 'ES14'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE CATALUÑA':
+        this.coidogoEstacion = 'ES10'
+        break;
+      case 'COMUNITAT VALENCIANA':
+        this.coidogoEstacion = 'ES12'
+        break;
+      case 'REGIÓN DE MURCIA':
+        this.coidogoEstacion = 'ES12'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE ANDALUCÍA':
+        this.coidogoEstacion = 'ES17'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE EXTREMADURA':
+        this.coidogoEstacion = 'ES11'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE CASTILLA-LA MANCHA':
+        this.coidogoEstacion = 'ES01'
+        break;
+      case 'COMUNIDAD DE MADRID':
+        this.coidogoEstacion = 'ES09'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE CASTILLA Y LEÓN':
+        this.coidogoEstacion = 'ES13'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE LA RIOJA':
+        this.coidogoEstacion = 'ES13'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE BALEARES':
+        this.coidogoEstacion = 'ES06'
+        break;
+      case 'COMUNIDAD AUTÓNOMA DE CANARIAS':
+        this.coidogoEstacion = 'ES06'
+        break;
+      case 'CIUDAD AUTÓNOMA DE CEUTA':
+        this.coidogoEstacion = 'ES07'
+        break;
+      case 'CIUDAD AUTÓNOMA DE MELILLA':
+        this.coidogoEstacion = 'ES07'
+        break;
+      default:
+        this.coidogoEstacion = 'ES01'
+        break;
+    }
   }
 
 
